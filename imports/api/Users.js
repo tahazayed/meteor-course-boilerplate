@@ -7,7 +7,7 @@ import SimpleSchema from 'simpl-schema';
 
 import {Accounts} from 'meteor/accounts-base';
 
-Accounts.validateNewUser((user) => {
+export const validateNewUser=(user) => {
 
     const email = user.emails[0].address;
 
@@ -19,7 +19,15 @@ Accounts.validateNewUser((user) => {
     }).newContext();
     emailValidator.validate({email});
 
+    if(!emailValidator.isValid())
+    {
+        throw new Error(emailValidator.validationErrors());
+    }
+
     return true;
-});
+};
+if(Meteor.isServer) {
+    Accounts.validateNewUser(validateNewUser);
+}
 
 
